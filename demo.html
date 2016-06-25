@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>reveal.js – The HTML Presentation Framework</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <style>
+      .reveal pre code {
+        max-height: 500px;
+      }
+
+      .reveal li {
+        margin-bottom: 20px;
+      }
+
+      .reveal.has-parallax-background .backgrounds {
+        opacity: .3;
+      }
+
+      .dora .reveal.has-parallax-background .backgrounds {
+        opacity: 1;
+      }
+
+   /*   .reveal.center .slides {
+        margin-top: 0px;
+      }*/
+
+      .dora-img.reno {
+        position: absolute;
+        text-align: center;
+        z-index: 1;
+        top: 270px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+    </style>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section id="content-start">
+          <h1>Ant Design of React</h1>
+          <h3>蚂蚁金服React组件实践分享</h3>
+          <p>
+            <small>Presented by <a href="#">SmartCRM 项目组</a> &amp; <a href="#">SmartFE 前端团队</a></small>
+          </p>
+        </section>
+
+
+        <section id="content-intro">
+          <h2>简介</h2>
+          <p class="fragment">Ant Design 的 React 实现，开发和服务于企业级后台产品</p>
+          <ul>
+            <li class="fragment">提供脚手架和开发工具</li>
+            <li class="fragment">
+              <ul class="fragment">
+                <li>SmartCRM项目使用版本：v0.12.x</li>
+                <li>最新版本：v1.x.x</li>
+              </ul>
+            </li>
+            <li class="fragment">
+              兼容性：据说可以支持 IE 8 及以上，<a href="https://github.com/xcatliu/react-ie8">IE 8 issue</a>
+            </li>
+            <li class="fragment">
+              使用情况：阿里巴巴、口碑、新美大、滴滴<a href="https://github.com/ant-design/ant-design/issues/477">等等</a>
+            </li>
+          </ul>
+        </section>
+
+
+        <section id="content-feature">
+          <h2>特点</h2>
+          <ul>
+            <li class="fragment">组件丰富，良好封装，上手简单，接口全面</li>
+            <li class="fragment">基于 npm + webpack + babel 的工作流</li>
+            <li class="fragment"><a href="http://react-component.github.io/badgeboard/">React Component</a> 上封装的基于 Ant Desgin 的 UI 库</li>
+            <li class="fragment">Bug 修复响应迅速</li>
+          </ul>
+        </section>
+
+
+        <section id="content-bootstrap">
+          <section id="content-bootstrap-1">
+            <h2>快速上手</h2>
+          </section>
+
+          <section id="content-bootstrap-2">
+            <h2>安装</h2>
+            <ul>
+              <li class="fragment">
+                <p>通过npm安装</p>
+                <pre><code class="hlzsh" data-trim contenteditable>
+npm install antd --save
+                </code></pre>
+              </li>
+              <li class="fragment">
+                <p>页面直接引用需要自行构建</p>
+              </li>
+            </ul>
+          </section>
+
+          <section id="content-bootstrap-3" data-markdown>
+            <script type="text/template">
+              ### 组件引用示例
+              ```js
+              import React from 'react';
+              import { DatePicker, message } from 'antd';
+
+              const App = React.createClass({
+                getInitialState() {
+                  return {
+                    date: ''
+                  };
+                },
+
+                handleChange(value) {
+                  message.info('您选择的日期是: ' + value.toString());
+                  this.setState({
+                    date: value
+                  });
+                },
+
+                render() {
+                  return <div>
+                    <DatePicker onChange={this.handleChange} />
+                    <div>当前日期：{this.state.date.toString()}</div>
+                  </div>;
+                }
+              });
+
+              export default App;
+              ```
+            </script>
+          </section>
+
+          <section id="content-bootstrap-4">
+            <h2>样式引用（全局）</h2>
+            <ul>
+              <li>
+                <h4 class="fragment">引用CSS文件</h4>
+                <pre class="fragment"><code class="hljsx" data-trim contenteditable>
+import &#x27;antd/dist/antd.css&#x27;
+                </code></pre>
+              </li>
+              <li>
+                <h4 class="fragment">引用LESS文件</h4>
+                <pre class="fragment"><code class="hljsx" data-trim contenteditable>
+import &#x27;antd/dist/antd.less&#x27;
+import &#x27;src/style/customized_vars.less&#x27; //自定义变量覆盖默认样式
+                </code></pre>
+              </li>
+            </ul>
+          </section>
+
+          <section id="content-bootstrap-5">
+            <h2>按需加载组件代码</h2>
+            <ul>
+              <li>
+                <p class="fragment">引用LESS文件</p>
+                <pre class="fragment"><code class="hljsx" data-trim contenteditable>
+import DatePicker from &#x27;antd/lib/date-picker&#x27;
+                </code></pre>
+              </li>
+              <li class="fragment">
+                <p>使用插件 <a href="https://github.com/ant-design/babel-plugin-antd">babel-plugin-antd</a></p>
+                <p>在babel的参数中加上此插件，也可实现按需加载</p>
+                <small>另：在新版本中，使用插件形式也可以通过配置将CSS样式也进行样式按需加载</small>
+              </li>
+            </ul>
+          </section>
+        </section>
+
+
+        <section id="usage">
+          <section id="usage-1">
+            <h2>组件实际使用方法和技巧</h2>
+          </section>
+
+          <section id="usage-2" data-markdown>
+            <script type="text/template">
+              ### 布局 Layout
+              ```js
+              import { Row, Col } from 'antd';
+
+              ReactDOM.render(
+                <div>
+                  <Row>
+                    <Col span={8}>.col-8</Col>
+                    <Col span={8} offset={8}>.col-8</Col>
+                  </Row>
+                  <Row>
+                    <Col span={6} offset={6}>.col-6 .col-offset-6</Col>
+                    <Col span={6} offset={6}>.col-6 .col-offset-6</Col>
+                  </Row>
+                  <Row type="flex" justify="space-around">
+                    <Col span={12} offset={6}>.col-12 .col-offset-6</Col>
+                  </Row>
+                </div>,
+                mountNode
+              );
+              ```
+              - 24栅格布局，但不支持响应式
+              - 支持Flex，可以使用flex的特性实现一些特殊布局
+            </script>
+          </section>
+
+          <section id="usage-3" data-markdown>
+            <script type="text/template">
+              ### 导航菜单 Menu
+              ```js
+              import { Menu, Icon } from 'antd';
+              const SubMenu = Menu.SubMenu;
+              const MenuItemGroup = Menu.ItemGroup;
+
+              const App = React.createClass({
+                handleClick(e) {
+                  console.log('click ', e);
+                },
+                render() {
+                  return (
+                    <Menu onClick={this.handleClick}
+                      mode="horizontal">
+                      <Menu.Item key="mail">
+                        <Icon type="mail" />导航一
+                      </Menu.Item>
+                      <Menu.Item key="app" disabled>
+                        <Icon type="appstore" />导航二
+                      </Menu.Item>
+                      <SubMenu title={<span><Icon type="setting" />导航 - 子菜单</span>}>
+                        <MenuItemGroup title="分组1">
+                          <Menu.Item key="setting:1">选项1</Menu.Item>
+                          <Menu.Item key="setting:2">选项2</Menu.Item>
+                        </MenuItemGroup>
+                        <MenuItemGroup title="分组2">
+                          <Menu.Item key="setting:3">选项3</Menu.Item>
+                          <Menu.Item key="setting:4">选项4</Menu.Item>
+                        </MenuItemGroup>
+                      </SubMenu>
+                      <Menu.Item key="alipay">
+                        <a href="http://www.alipay.com/" target="_blank">导航四 - 链接</a>
+                      </Menu.Item>
+                    </Menu>
+                  );
+                },
+              });
+
+              ReactDOM.render(<App />, mountNode);
+              ```
+              - Menu统一管理Menu.item上的事件
+              - 复用在很多其他的组件里，或内置或者自己构建，比如Select组件，Dropdown组件
+            </script>
+          </section>
+
+          <section id="usage-4" data-markdown>
+            <script type="text/template">
+              ### 全局提示 Message
+              #### 一般使用
+              ```js
+              message.success(content, duration)
+              message.error(content, duration)
+              message.info(content, duration)
+              ...
+              ```
+              #### 全局配置和销毁
+              ```js
+              message.config(options)
+              message.destroy()
+              ```
+
+              #### 异步关闭
+              ```js
+                let hide = message.loading('正在执行中...', 0);
+                // 异步手动移除
+                setTimeout(hide, 2500);
+              ```
+
+            </script>
+          </section>
+
+
+          <section id="usage-5" data-markdown>
+            <script type="text/template">
+              ### 全局提示 Message
+              - 和大部分的组件不一样
+              - 不能作为一个普通的React Component引用
+              - 封装成为了方法，每个方法都会自动创建一个实例
+              - 实例创建在body的直接下层
+              - 对服务端渲染可能有影响
+            </script>
+          </section>
+
+          <section id="usage-6" data-markdown>
+            <script type="text/template">
+              ### 日期选择 DatePicker
+              ```js
+              import { DatePicker } from 'antd';
+              const MonthPicker = DatePicker.MonthPicker;
+              const RangePicker = DatePicker.RangePicker;
+              // 隐藏组件，无相关文档
+              const Calendar = DatePicker.Calendar;
+              ```
+              - 除了主要的组件可以直接导入，还有三个组件绑定在DatePicker之上
+              - 集中管理，逻辑相似，共用代码
+            </script>
+          </section>
+
+          <section id="usage-7" data-markdown>
+            <script type="text/template">
+              ### 日期选择 DatePicker
+              拓展使用Calendar组件
+              - 可以作为一个日期选择面板使用
+              - 回调方式类似于DatePicker
+
+              ```js
+              import { DatePicker } from 'antd';
+              const DatePickerCalendar = DatePicker.Calendar;
+              import GregorianCalendar from 'gregorian-calendar';
+
+              const CalendarPicker = React.createClass({
+                render() {
+                  var locale = {
+                    "timezoneOffset": 480,
+                    "firstDayOfWeek": 1,
+                    "minimalDaysInFirstWeek": 1
+                  };
+                  var defaultCalendarValue = new GregorianCalendar(locale);
+                  defaultCalendarValue.setTime(Date.now());
+
+                  return <DatePickerCalendar defaultValue={defaultCalendarValue} {...this.props} />
+                }
+              });
+
+              export default CalendarPicker;
+              ```
+            </script>
+          </section>
+
+          <section id="usage-8" data-markdown>
+            <script type="text/template">
+              ### 对话框 Modal
+              - 使用率很高的组件，实现起来也不简单
+              - Bootstrap的实现、Angular的实现、React的实现
+
+              ```js
+              import { Modal, Button } from 'antd';
+
+              const App = React.createClass({
+                getInitialState() {
+                  return { visible: false };
+                },
+                showModal() {
+                  this.setState({
+                    visible: true,
+                  });
+                },
+                handleOk() {
+                  console.log('点击了确定');
+                  this.setState({
+                    visible: false,
+                  });
+                },
+                handleCancel(e) {
+                  console.log(e);
+                  this.setState({
+                    visible: false,
+                  });
+                },
+                render() {
+                  return (
+                    <div>
+                      <Button type="primary" onClick={this.showModal}>显示对话框</Button>
+                      <Modal title="第一个 Modal" visible={this.state.visible}
+                        onOk={this.handleOk} onCancel={this.handleCancel}>
+                        <p>对话框的内容</p>
+                        <p>对话框的内容</p>
+                        <p>对话框的内容</p>
+                      </Modal>
+                    </div>
+                  );
+                },
+              });
+
+              ReactDOM.render(<App />, mountNode);
+              ```
+            </script>
+          </section>
+
+          <section id="usage-9" data-markdown>
+            <script type="text/template">
+              ### 对话框 Modal
+              - 通过this.props.children的方式传递内容
+              - Modal的位置不是当前的DOM节点，而是最外层的Body上
+              - 第一次visible为true之前，DOM节点中不存在对应的节点
+              - visible为true之后，Dialog节点就会一直存在
+              - 没有直接的API去销毁Modal，关闭只是隐藏
+            </script>
+          </section>
+
+          <section id="usage-10" data-markdown>
+            <script type="text/template">
+              ### 选择器 Select
+
+              ```js
+              import { Select } from 'antd';
+              const Option = Select.Option;
+
+              function handleChange(value) {
+                console.log(`selected ${value}`);
+              }
+
+              ReactDOM.render(
+                <div>
+                  <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChange}>
+                    <Option value="jack">Jack</Option>
+                    <Option value="lucy">Lucy</Option>
+                    <Option value="disabled" disabled>Disabled</Option>
+                    <Option value="yiminghe">yiminghe</Option>
+                  </Select>
+                </div>
+              , mountNode);
+              ```
+            </script>
+          </section>
+
+
+          <section id="usage-11" data-markdown>
+            <script type="text/template">
+              ### 选择器 Select
+              - 多选：取代项目繁多的Checkbox
+              - 标签：随意输入内容
+              - 搜索：filterOption，optionFilterProp
+              - 智能提示：combobox
+              - 联动：可以用Cascader替代
+            </script>
+          </section>
+
+
+          <section id="usage-11" data-markdown>
+            <script type="text/template">
+              ### 选择器 Select
+              项目封装实例
+              ```js
+              generateSelect(item) {
+                let searchOptions = {};
+                const searchCallback = (searchTxt) => {
+                  const cloneItem = $.extend(true, {}, item);
+                  const remoteOpts = cloneItem.selectRemoteOptions;
+                  if (!remoteOpts || !remoteOpts.searchKey) {
+                    return;
+                  }
+                  let url = remoteOpts.url;
+                  if (url.indexOf('?') > 0) {
+                    url = `${url}&${remoteOpts.searchKey}=${searchTxt}`;
+                  } else {
+                    url = `${url}?${remoteOpts.searchKey}=${searchTxt}`;
+                  }
+                  remoteOpts.url = url;
+                  remoteOpts.url = '/api/crm/organizations?page=1&pageSize=3';
+                  this.fetchRemoteOptions(cloneItem, 'select');
+                };
+                const selectOpts = item.selectOptions ? item.selectOptions : [];
+                if (selectOpts.length >= 10 || item.selectRemoteOptions) {
+                  searchOptions = {
+                    showSearch: true,
+                    optionFilterProp: 'children',
+                    notFoundContent: '无法找到',
+                    searchPlaceholder: '输入关键词',
+                  };
+                  if (item.selectRemoteOptions) {
+                    searchOptions.onSearch = debounce(searchCallback, 1000);
+                  }
+                }
+
+                let opts;
+                let disabled = false;
+                if (item.selectRemoteOptions) {
+                  opts = this.state.selectRemoteOptions[item.id] || [];
+                  disabled = !this.state.selectRemoteOptions[item.id];
+                } else {
+                  opts = selectOpts;
+                }
+
+                const options = opts.map((option, index) =>
+                  <Option value={option.id} key={index}>{option.name}</Option>
+                );
+
+                return (
+                  <Select
+                    allowClear
+                    placeholder="请选择"
+                    notFoundContent="无可用选项"
+                    disabled={disabled}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode.parentNode.parentNode}
+                    {...searchOptions}
+                    {...this.props.form.getFieldProps(item.id, item.fieldPropsOptions)}
+                    {...item.fieldOptions}
+                  >
+                    {options}
+                  </Select>
+                );
+              }
+
+              /*{
+                title: '市场活动',
+                type: 'Select',
+                id: 'marketActivityId',
+                selectRemoteOptions: {
+                  url: '/api/crm/market_activities?noPage=true',
+                  idKey: 'id',
+                  nameKey: 'activityTopic'
+                }
+              }*/
+              ```
+            </script>
+          </section>
+
+
+          <section id="usage-12" data-markdown>
+            <script type="text/template">
+              ### 上传组件 Upload
+              好难用～
+
+              ```js
+              import { Upload, message, Button, Icon } from 'antd';
+
+              const props = {
+                name: 'file',
+                action: '/upload.do',
+                headers: {
+                  authorization: 'authorization-text',
+                },
+                onChange(info) {
+                  if (info.file.status !== 'uploading') {
+                    console.log(info.file, info.fileList);
+                  }
+                  if (info.file.status === 'done') {
+                    message.success(`${info.file.name} 上传成功。`);
+                  } else if (info.file.status === 'error') {
+                    message.error(`${info.file.name} 上传失败。`);
+                  }
+                },
+              };
+
+              ReactDOM.render(
+                <Upload {...props}>
+                  <Button type="ghost">
+                    <Icon type="upload" /> 点击上传
+                  </Button>
+                </Upload>
+              , mountNode);
+              ```
+            </script>
+          </section>
+
+
+          <section id="usage-13" data-markdown>
+            <script type="text/template">
+              ### 上传组件 Upload
+              - 上传方式固定，每次上传一个文件
+              - 通过multipart/form-data形式提交
+              - 只能通过 onChange 和 beforeUpload 干预组件的行为
+              - 没有disabled属性：Hack的做法是隐藏上传按钮和文件列表的移除按钮
+              - 和Form组件的双向绑定需要添加额外的参数
+            </script>
+          </section>
+        </section>
+
+
+        <section id="complex-usage">
+          <h2>复杂组件及特殊使用</h2>
+        </section>
+
+
+        <section id="complex-usage-table">
+          <section id="complex-usage-table-1">
+            <h3>表格 Table</h3>
+          </section>
+
+          <section id="complex-usage-table-2">
+            <h3>表格 Table</h3>
+            <h4>基本用法</h4>
+            <ul>
+              <li>dataSource为数据，数组形式</li>
+              <li>columns为配置，配置每一列对应的数据字段和显示内容</li>
+            </ul>
+          </section>
+
+
+          <section id="complex-usage-table-3" data-markdown>
+            <script type="text/template">
+              ### 表格 Table
+              #### 数据输入
+              ```js
+              const dataSource = [{
+                key: '1',
+                name: '胡彦斌',
+                age: 32,
+                address: '西湖区湖底公园1号'
+              }, {
+                key: '2',
+                name: '胡彦祖',
+                age: 42,
+                address: '西湖区湖底公园1号'
+              }];
+
+              const columns = [{
+                title: '姓名',
+                dataIndex: 'name',
+                key: 'name',
+              }, {
+                title: '年龄',
+                dataIndex: 'age',
+                key: 'age',
+              }, {
+                title: '住址',
+                dataIndex: 'address',
+                key: 'address',
+              }];
+
+              <Table dataSource={dataSource} columns={columns} />
+              ```
+            </script>
+          </section>
+
+          <section id="complex-usage-table-4">
+            <h3>展示特定的内容</h3>
+            <ul>
+              <li>配置render选项，三个参数data, record, index</li>
+              <li><a href="http://dev.smartstudy.com:3301/branches/student/list">实例</a></li>
+            </ul>
+          </section>
+
+
+          <section id="complex-usage-table-5">
+            <h3>表格 Table</h3>
+            <h4>列配置</h4>
+            <pre><code class="hljsx">
+// &#24207;&#21495;&#65292;&#22995;&#21517;&#65292;&#32852;&#31995;&#30005;&#35805;&#65292;&#30005;&#23376;&#37038;&#31665;&#65292;&#23398;&#20064;&#24847;&#21521;&#65292;&#21830;&#26426;&#29366;&#24577;&#65292;&#24037;&#21333;&#29366;&#24577;&#65292;&#36131;&#20219;&#20154;&#65292;&#21019;&#24314;&#26102;&#38388;&#65292;&#25805;&#20316;
+// &#33719;&#21462;Table&#30340;&#21015;&#35774;&#32622;
+getTableColumns() {
+  return [
+    {
+      title: '&#24207;&#21495;',
+      dataIndex: 'id',
+      key: 'id'
+    }, {
+      title: '&#22995;&#21517;',
+      dataIndex: 'name',
+      key: 'name'
+    }, {
+      title: '&#32852;&#31995;&#30005;&#35805;',
+      dataIndex: 'phone',
+      key: 'phone'
+    }, {
+      title: '&#30005;&#23376;&#37038;&#31665;',
+      dataIndex: 'email',
+      key: 'email'
+    }, {
+      title: '&#23398;&#20064;&#24847;&#21521;',
+      dataIndex: 'studyIntention',
+      key: 'studyIntention',
+      render(studyIntention) {
+        return studyIntention &amp;&amp; studyIntention.length &amp;&amp; studyIntention.join(', ');
+      }
+    }, {
+      title: '&#21830;&#26426;&#29366;&#24577;',
+      dataIndex: 'clue',
+      key: 'clue',
+      render(clue, record, index) {
+        return clue &amp;&amp; CLUE_STATUS[clue.statusId];
+      }
+    }, {
+      title: '&#24037;&#21333;&#29366;&#24577;',
+      dataIndex: 'chance',
+      key: 'chance',
+      render(chance, record, index) {
+        return chance &amp;&amp; CHANCE_STATUS[chance.statusId];
+      }
+    }, {
+      title: '&#36131;&#20219;&#20154;',
+      dataIndex: 'creator',
+      key: 'creator',
+      render(creator, record, index) {
+        return creator &amp;&amp; creator.name;
+      }
+    }, {
+      title: '&#21019;&#24314;&#26102;&#38388;',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render(text, record, index) {
+        return moment(text).format('YYYY-MM-DD');
+      }
+    }, {
+      title: '&#25805;&#20316;',
+      key: 'operation',
+      render: (text, record, index) =&gt; {
+        return (
+          &lt;span&gt;
+            {(() =&gt; {
+              if(func.checkPermissionOperation('crm_student-view')) {
+                return (
+                  &lt;Link to={`${this.props.routes[1].path}/student/${record.id}/show`}&gt;&#26597;&#30475;&lt;/Link&gt;
+                )
+              }
+            })()}
+            {(() =&gt; {
+              if(func.checkPermissionOperation('crm_student-update')) {
+                return (
+                  &lt;span&gt;
+                    &lt;span className=&quot;ant-divider&quot;&gt;&lt;/span&gt;
+                    &lt;Link to={`${this.props.routes[1].path}/student/${record.id}/edit`}&gt;&#32534;&#36753;&lt;/Link&gt;
+                  &lt;/span&gt;
+                )
+              }
+            })()}
+          &lt;/span&gt;
+        );
+      }
+    }
+  ]
+},
+            </code></pre>
+          </section>
+
+
+          <section id="complex-usage-table-6">
+            <h3>分页配置 pagination</h3>
+            <ul>
+              <li>可前端分页和后端分页</li>
+              <li>基本参数</li>
+              <li>onChange事件和onShowSizeChange事件</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-table-7" data-markdown>
+            <script type="text/template">
+              ```js
+              <Table bordered
+                loading={!studentList.completed}
+                columns={this.getTableColumns()}
+                rowKey={(record, index) => index}
+                dataSource={listData.data}
+                onChange={this.handleTableChange}
+                pagination={{
+                  showSizeChanger: true,
+                  defaultCurrent: 1,
+                  current: listData.page,
+                  total: listData.count,
+                  pageSize: listData.pageSize,
+                  pageSizeOptions: ['10', '20', '50', '100', '200', '500', '5000'],
+                  onShowSizeChange: this.handlePageSizeChange,
+                  showTotal: (total) => `共 ${total} 条`
+                }}
+              />
+              ```
+            </script>
+          </section>
+
+          <section id="complex-usage-table-8">
+            <h3>其他的一些用法</h3>
+            <ul>
+              <li>loading状态</li>
+              <li>列选择 rowSelection</li>
+              <li>过滤 filter</li>
+            </ul>
+          </section>
+
+        </section>
+
+
+        <section id="complex-usage-form">
+          <section id="complex-usage-form-1">
+            <h2>Form 表单</h2>
+          </section>
+
+          <section id="complex-usage-form-2">
+            <h3>涵盖范围</h3>
+            <ul>
+              <li>表单封装：Form、Form.Item</li>
+              <li>表单控件包括：Input, Cascader, Checkbox, DatePicker, InputNumber, Radio, Rate, Select, Slider, Switch, TimePicker, Transfer, TreeSelect, Uplaod</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-3" data-markdown>
+            <script type="text/template">
+              ### 整体表单封装：Form.create
+              ```js
+              let Demo = React.createClass({
+                handleSubmit(e) {
+                  e.preventDefault();
+                  console.log('收到表单值：', this.props.form.getFieldsValue());
+                },
+
+                render() {
+                  const { getFieldProps } = this.props.form;
+                  return (
+                    <Form inline onSubmit={this.handleSubmit}>
+                      <FormItem label="账户：">
+                        <Input placeholder="请输入账户名"
+                          {...getFieldProps('userName')} />
+                      </FormItem>
+                      <FormItem label="密码：">
+                        <Input type="password" placeholder="请输入密码"
+                          {...getFieldProps('password')} />
+                      </FormItem>
+                      <Button type="primary" htmlType="submit">登录</Button>
+                    </Form>
+                  );
+                },
+              });
+
+              Demo = Form.create()(Demo);
+              ```
+            </script>
+          </section>
+
+          <section id="complex-usage-form-4">
+            <h3>整体表单封装：Form.create</h3>
+            <ul>
+              <li>类似于Redux中的Connect方法，同样通过map函数映射数据</li>
+              <li>在原有组件的<a href="http://ant.design/#/components/form">外部加了一层Wrapper</a>以方便对表单组件进行数据双向绑定</li>
+              <li>通过外部Wrapper的State来追踪内部表单的变化</li>
+              <li>通过外部Wrapper传递的方法实现类似Mixins的效果</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-5">
+            <h3>整体表单封装</h3>
+            <ul>
+              <li>数据绑定</li>
+              <li>数据收集</li>
+              <li>数据映射</li>
+              <li>表单提交</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-6">
+            <h3>整体表单封装：数据映射</h3>
+            <ul>
+              <li>this.props.form.getFieldProps('id')</li>
+              <li>getFieldProps 返回的属性包括 id、value（或你设置的其它 valuePropName）、ref、onChange（或者你设置的其它 trigger validateTrigger），所以不应再设置同样的属性，以免冲突。</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-7">
+            <h3>整体表单封装：数据收集</h3>
+            <ul>
+              <li>整体收集：this.props.form.getFieldsValue()</li>
+              <li>单个收集：this.props.form.getFieldValue()</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-8" data-markdown>
+            <script type="text/template">
+              ### 整体表单封装：Form.create
+              - 整体设置：this.props.form.setFieldsValue()
+              - 从Redux映射
+
+              ```js
+              let Demo = React.createClass({
+                ...
+              });
+
+              const mapPropsToFields = function (props) {
+                // studentData = {
+                //   id: 1,
+                //   name: 'zhangsan'
+                // }
+                const propsData = props.studentData;
+                const ret = {
+                  id: {
+                    value: props.id
+                  },
+                  name: {
+                    value: props.name
+                  }
+                };
+                return ret;
+              }
+
+              Demo = Form.create(null, mapPropsToFields)(Demo);
+              ```
+            </script>
+          </section>
+
+          <section id="complex-usage-form-9">
+            <h3>整体表单封装：表单提交</h3>
+            <ul>
+              <li>onSubmit事件</li>
+              <li>表单验证通过后才会触发</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-10">
+            <h3>表单组件的封装：Form.Item</h3>
+            <ul>
+              <li>设置Label</li>
+              <li>设置表单<a href="http://ant.design/components/form#components-form-demo-form-controls">组件的布局</a></li>
+              <li>设置表单的帮助信息（校验提示）</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-11">
+            <h3>表单组件的校验：<a href="https://github.com/yiminghe/async-validator">async-validator</a></h3>
+            <ul>
+              <li>Required、Enumerable验证</li>
+              <li>Length、Range验证</li>
+              <li>Type验证</li>
+              <li>自定义Validator函数</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-12">
+            <h3>表单组件的<a href="http://ant.design/#/components/form?scrollTo=components-form-demo-validate-basic">校验</a></h3>
+            <ul>
+              <li>作为getFieldProps的第二个参数传递</li>
+              <li>设置相应的校验规则和触发规则</li>
+            </ul>
+          </section>
+
+          <section id="complex-usage-form-13" data-markdown>
+            <script type="text/template">
+            ### 表单组件的校验和提交
+
+            ```js
+            // 处理保存和提交两种选择
+            handleSubmit(type, e) {
+              e.preventDefault();
+
+              this.props.form.validateFieldsAndScroll((errors, fieldsValue) => {
+                if (!!errors) {
+                  return;
+                }
+
+                mapFetchParams(fieldsValue, {
+                  provinceAndCity: ['provinceId', 'cityId'],
+                  infoSource: ['infoSourceLevel1Id', 'infoSourceLevel2Id']
+                });
+
+                let params = {
+                  actionType: SUBMIT_TYPE[type],
+                  data: fieldsValue
+                }
+
+                this.props.studentActions.updateStudent(this.studentId, params);
+              });
+            }
+            ```
+            </script>
+          </section>
+        </section>
+
+
+        <section id="formgroup">
+          <section id="formgroup-1">
+            <h3>项目中表单组件封装</h3>
+          </section>
+
+          <section id="formgroup-2" data-markdown>
+            <script type="text/template">
+              ### 项目中表单组件封装
+              - 大量使用表单，大量使用输入控件
+              - 直接引用ANTD的组件
+
+              ```js
+              import { Form, Select, InputNumber, DatePicker, TimePicker, Switch, Radio,
+                       Cascader, Slider, Button, Col, Upload, Icon } from 'antd';
+              const FormItem = Form.Item;
+              const Option = Select.Option;
+              const RadioButton = Radio.Button;
+              const RadioGroup = Radio.Group;
+
+              const areaData = [{
+                value: 'shanghai',
+                label: '上海',
+                children: [{
+                  value: 'shanghaishi',
+                  label: '上海市',
+                  children: [{
+                    value: 'pudongxinqu',
+                    label: '浦东新区',
+                  }],
+                }],
+              }];
+
+              let Demo = React.createClass({
+                handleSubmit(e) {
+                  e.preventDefault();
+                  console.log('收到表单值：', this.props.form.getFieldsValue());
+                },
+
+                normFile(e) {
+                  if (Array.isArray(e)) {
+                    return e;
+                  }
+                  return e && e.fileList;
+                },
+
+                render() {
+                  const { getFieldProps } = this.props.form;
+                  return (
+                    <Form horizontal onSubmit={this.handleSubmit} >
+                      <FormItem
+                        label="InputNumber 数字输入框"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 10 }}>
+                        <InputNumber min={1} max={10} style={{ width: 100 }}
+                          {...getFieldProps('inputNumber', { initialValue: 3 })} />
+                        <span className="ant-form-text"> 台机器</span>
+                      </FormItem>
+
+                      <FormItem
+                        label="我是标题"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 10 }}>
+                        <p className="ant-form-text" id="static" name="static">唧唧复唧唧木兰当户织呀</p>
+                        <p className="ant-form-text">
+                          <a href="#">链接文字</a>
+                        </p>
+                      </FormItem>
+
+                      <FormItem
+                        label="Switch 开关"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 10 }}
+                        required>
+                        <Switch {...getFieldProps('switch', { valuePropName: 'checked' })} />
+                      </FormItem>
+
+                      <FormItem
+                        label="Slider 滑动输入条"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 10 }}
+                        required>
+                        <Slider marks={['A', 'B', 'C', 'D', 'E', 'F', 'G']} {...getFieldProps('slider')} />
+                      </FormItem>
+
+                      <FormItem
+                        label="Select 选择器"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        required>
+                        <Select style={{ width: 200 }}
+                          {...getFieldProps('select')}>
+                          <Option value="jack">jack</Option>
+                          <Option value="lucy">lucy</Option>
+                          <Option value="disabled" disabled>disabled</Option>
+                          <Option value="yiminghe">yiminghe</Option>
+                        </Select>
+                      </FormItem>
+
+                      <FormItem
+                        label="级联选择"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        required
+                        hasFeedback>
+                        <Cascader style={{ width: 200 }} options={areaData} {...getFieldProps('area')} />
+                      </FormItem>
+
+                      <FormItem
+                        label="DatePicker 日期选择框"
+                        labelCol={{ span: 8 }}
+                        required>
+                        <Col span="6">
+                          <FormItem>
+                            <DatePicker {...getFieldProps('startDate')} />
+                          </FormItem>
+                        </Col>
+                        <Col span="1">
+                          <p className="ant-form-split">-</p>
+                        </Col>
+                        <Col span="6">
+                          <FormItem>
+                            <DatePicker {...getFieldProps('endDate')} />
+                          </FormItem>
+                        </Col>
+                      </FormItem>
+
+
+                      <FormItem
+                        label="TimePicker 时间选择器"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        required>
+                        <TimePicker {...getFieldProps('time')} />
+                      </FormItem>
+
+                      <FormItem
+                        label="选项"
+                        labelCol={{ span: 8 }}>
+                        <RadioGroup {...getFieldProps('rg')}>
+                          <RadioButton value="a">选项一</RadioButton>
+                          <RadioButton value="b">选项二</RadioButton>
+                          <RadioButton value="c">选项三</RadioButton>
+                        </RadioGroup>
+                      </FormItem>
+
+                      <FormItem
+                        label="logo图"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        help="提示信息要长长长长长长长长长长长长长长">
+                        <Upload name="logo" action="/upload.do" listType="picture" onChange={this.handleUpload}
+                          {...getFieldProps('upload', {
+                            valuePropName: 'fileList',
+                            normalize: this.normFile,
+                          })}
+                        >
+                          <Button type="ghost">
+                            <Icon type="upload" /> 点击上传
+                          </Button>
+                        </Upload>
+                      </FormItem>
+
+                      <FormItem wrapperCol={{ span: 16, offset: 8 }} style={{ marginTop: 24 }}>
+                        <Button type="primary" htmlType="submit">确定</Button>
+                      </FormItem>
+                    </Form>
+                  );
+                },
+              });
+
+              Demo = Form.create()(Demo);
+
+              ReactDOM.render(<Demo />, mountNode);
+              ```
+            </script>
+          </section>
+
+          <section id="formgroup-3" data-markdown>
+            <script type="text/template">
+              ### 项目中表单组件封装
+
+              - 二次封装 ANTD 组件
+              - 通过传递配置项数组生成组件
+              - 简化重复代码，增加复用性
+              - 开放足够的参数，增加组件灵活性（也有Drawback）
+              - 集中管理组件逻辑，有变化统一修改
+              - 只封装展示的表单控件，而不是表单本身
+            </script>
+          </section>
+
+
+          <section id="formgroup-4" data-markdown>
+            <script type="text/template">
+              ### 项目中表单组件封装
+
+              - 组件的参数项传递给 GeneratedForm
+              - 开始生成组件 generateFormItems
+              - 封装外层的FormItem，读取itemOptions
+              - 计算半响应式 span 宽度
+              - 通过propertyName的方式调用不同方法，避免冗长的switch
+              - 每个组件各自的生成函数，读取fieldOptions
+              - 在Container层或者外层封装Form.create
+            </script>
+          </section>
+        </section>
+
+
+        <section id="content-bonus">
+          <section id="content-bonus-1">
+            <h2>额外的收获</h2>
+            <h3 class="fragment">
+              <a href="https://ant-tool.github.io/">Ant-Tool</a>：蚂蚁金服新一代构建和调试工具
+            </h3>
+            <ul>
+              <li class="fragment">快速构建</li>
+              <li class="fragment">Dora调试：基于koa，整合webpack，livreload，browsersync，数据mock，本地代理、weinre、jsonapi</li>
+              <li class="fragment">测试：mocha + chai + sinnon</li>
+              <li class="fragment">文档生成：结合gh-pages</li>
+            </ul>
+          </section>
+
+          <section id="content-bonus-2">
+            <h3>Ant-Tool</h3>
+            <h4>Dora-js 由来</h4>
+            <p>整合前端的各类自动化任务，减轻前端工程化后开发过程中大量的重复劳动</p>
+            <p class="fragment">
+              <img src="./assets/dora.png" alt="">
+            </p>
+            <img class="reno fragment dora-img fade-up" src="./assets/reno.png" alt="">
+          </section>
+
+
+          <section id="content-bonus-4" data-background="./assets/doraemon_big.jpg" data-background-transition="zoom" data-state="dora">
+
+          </section>
+
+          <section id="content-bonus-5">
+            <h3>Ant-Tool</h3>
+            <h4>Dora-js 特性</h4>
+            <ul>
+              <li class="fragment">使用 Webpack 打包，优化输出</li>
+              <li class="fragment">使用Koa启动的服务来运行这些插件</li>
+              <li class="fragment">基于Koa的中间件机制，将各种插件封装成中间件，提供多个回调时间点，让插件能够更好的并存</li>
+              <li class="fragment">HMR 和 Livereload</li>
+              <li class="fragment">错误提示直接输出至浏览器</li>
+            </ul>
+          </section>
+
+          <section id="content-bonus-6">
+            <h3>其他的资源</h3>
+            <ul>
+              <li class="fragment">其他非官方实现，<a href="https://github.com/okoala/vue-antd">vue-antd</a>和<a href="https://github.com/idcos/antd-ember">vue-ember</a> （可惜不是太稳定）</li>
+              <li class="fragment">Ant Design Axure Components &amp; Axure Box 为了让我们有更好看的原型，请安利给产品们</li>
+              <li class="fragment">Ant UX 为了让某种绿色别再出现，请安利给设计们（顺便可以安利Sketch）</li>
+            </ul>
+          </section>
+
+          <section id="content-bonus-7">
+            <h3>未来的可能发展</h3>
+            <ul>
+              <li class="fragment">Typescript 的支持</li>
+              <li class="fragment">响应式的支持</li>
+              <li class="fragment">新的颜色系统和icon设计</li>
+              <li class="fragment">服务器端渲染？</li>
+              <li class="fragment">富文本编辑器？</li>
+            </ul>
+          </section>
+
+        </section>
+
+        <section id="faq_links">
+          <h2>FAQ TIME</h2>
+          <h4>参考资料</h4>
+          <ul>
+            <li><a href="http://ant.design/">Ant Design 站点</a></li>
+            <li><a href="https://github.com/ant-design/ant-design">Ant Design Github Repo</a></li>
+            <li><a href="https://github.com/react-component/">React Component</a></li>
+            <li><a href="https://ant-tool.github.io/index.html">Ant Tools</a></li>
+            <li><a href="https://github.com/dora-js/dora">dora-js</a></li>
+          </ul>
+        </section>
+
+        <section id="end">
+          <h1>THANKS</h1>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+
+      // More info https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        width: 1024,
+        height: 750,
+
+        parallaxBackgroundImage: './assets/bg.png',
+
+        // Parallax background size
+        parallaxBackgroundSize: '2722px 1694px', // CSS syntax, e.g. "2100px 900px" - currently only pixels are supported (don't use % or auto)
+
+        transition: 'concave', // none/fade/slide/convex/concave/zoom
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+          { src: 'plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
